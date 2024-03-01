@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "1",
+    "name": "angular",
+    "category": "front-end"
+  },
+  {
+    "_id": "2",
+    "name": "spring",
+    "category": "back-end"
+  },
+  {
+    "_id": "3",
+    "name": "SQL",
+    "category": "database"
+  }
+]
