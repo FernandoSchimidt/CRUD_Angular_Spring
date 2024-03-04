@@ -27,4 +27,12 @@ public class CourseController {
     public Course create(@RequestBody Course course){
         return repository.save(course);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Course> findById(@PathVariable Long id){
+       return repository.findById(id)
+               .map(record -> ResponseEntity.ok().body(record))
+               .orElse(ResponseEntity.notFound().build());
+    }
+
 }
