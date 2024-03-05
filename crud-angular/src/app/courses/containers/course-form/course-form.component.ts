@@ -1,8 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup,NonNullableFormBuilder,UntypedFormBuilder,UntypedFormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  NonNullableFormBuilder,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { CourseService } from '../../service/course.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Course } from '../../model/course';
 
 @Component({
   selector: 'app-course-form',
@@ -10,8 +17,8 @@ import { Router } from '@angular/router';
   styleUrl: './course-form.component.scss',
 })
 export class CourseFormComponent {
-
-  form= this.formBuilder.group({
+  form = this.formBuilder.group({
+    id: [''],
     name: [''],
     category: [''],
   });
@@ -20,9 +27,18 @@ export class CourseFormComponent {
     private formBuilder: NonNullableFormBuilder,
     private service: CourseService,
     private snackBar: MatSnackBar,
-    private router: Router
-  ) {
-    // this.form
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    const course: Course = this.route.snapshot.data['course'];
+    // console.log(course);
+    this.form.setValue({
+      id: course.id,
+      name: course.name,
+      category: course.category,
+    });
   }
 
   onSubmit() {

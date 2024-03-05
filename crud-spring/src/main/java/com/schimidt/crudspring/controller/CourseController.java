@@ -35,4 +35,26 @@ public class CourseController {
                .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Course> update( @PathVariable Long id,
+                                          @RequestBody Course course){
+       return  repository.findById(id)
+               .map(recordFound -> {
+                   recordFound.setName(course.getName());
+                   recordFound.setCategory(course.getCategory());
+                   Course updated = repository.save(recordFound);
+                   return  ResponseEntity.ok().body(updated);
+               })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+               return repository.findById(id)
+                .map(recordFound -> {
+                    repository.deleteById(id);
+                     return ResponseEntity.noContent().<Void>build();
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

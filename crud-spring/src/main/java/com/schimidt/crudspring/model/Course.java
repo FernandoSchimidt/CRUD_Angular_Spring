@@ -14,7 +14,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonProperty("_id")
+    @JsonProperty("id")
     private Long id;
     @Column(name = "name",length = 200,nullable = false)
     private String name;
