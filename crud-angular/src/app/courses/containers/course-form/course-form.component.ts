@@ -5,6 +5,7 @@ import {
   NonNullableFormBuilder,
   UntypedFormBuilder,
   UntypedFormGroup,
+  Validators,
 } from '@angular/forms';
 import { CourseService } from '../../service/course.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,8 +20,11 @@ import { Course } from '../../model/course';
 export class CourseFormComponent {
   form = this.formBuilder.group({
     id: [''],
-    name: [''],
-    category: [''],
+    name: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
+    ],
+    category: ['', [Validators.required]],
   });
 
   constructor(
@@ -61,5 +65,24 @@ export class CourseFormComponent {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  getErrorMessage(fieldName: string) {
+    const field = this.form.get(fieldName);
+
+    const erros = this.form.getError(fieldName);
+
+    if (field?.hasError('required')) {
+      return 'Campo obrigatorio';
+    }
+    if (field?.hasError('minlength')) {
+      const requiredLenght = erros ? erros['requiredlength'] : 5;
+      return `O campo nome deve ter pelo menos ${requiredLenght} caracteres`;
+    }
+    if (field?.hasError('maxlength')) {
+      const requiredLenght = erros ? erros['requiredlength'] : 50;
+      return `O campo nome deve ter no maximo ${requiredLenght} caracteres`;
+    }
+    return 'Campo invalido';
   }
 }
