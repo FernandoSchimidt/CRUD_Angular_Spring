@@ -9,10 +9,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.SQLSelect;
 import org.hibernate.validator.constraints.Length;
 
 @Data
 @Entity
+@SQLDelete(sql = "UPDATE course SET status = 'Inativo' WHERE id=?")
+@SQLRestriction("status <> 'Inativo'")
 //@Table(name="cursos") caso ja exista a tabela no banco, declarar o nome da tabela
 public class Course {
 
@@ -32,4 +37,10 @@ public class Course {
     @Length(max = 50)
     @Pattern(regexp = "Back-end|Front-end")
     private String category;
+
+    @Column(name="status",length = 10,nullable = false)
+    @NotNull
+    @Length(max = 10)
+    @Pattern(regexp = "Ativo|Inativo")
+    private String status = "Ativo";
 }
