@@ -1,5 +1,6 @@
 package com.schimidt.crudspring.service;
 
+import com.schimidt.crudspring.exception.RecordNotFoundException;
 import com.schimidt.crudspring.model.Course;
 import com.schimidt.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -31,28 +32,32 @@ public class CourseService {
         return repository.findAll();
     }
 
-    public Optional<Course> findById(@PathVariable @NotNull @Positive Long id){
-        return repository.findById(id);
+    public Course findById(@PathVariable @NotNull @Positive Long id){
+        return repository.findById(id).orElseThrow(()-> new RecordNotFoundException(id));
     }
     public Course create(@Valid Course course){
         return repository.save(course);
     }
 
-   public Optional<Course> update (@NotNull @Positive Long id, @Valid Course course){
+   public Course update (@NotNull @Positive Long id, @Valid Course course){
         return repository.findById(id)
                 .map(recordFound->{
                     recordFound.setName(course.getName());
                     recordFound.setCategory(course.getCategory());
                     return  repository.save(recordFound);
-                });
+                }).orElseThrow(()->new RecordNotFoundException(id));
    }
 
-    public boolean delete(@PathVariable @NotNull @Positive Long id){
-        return repository.findById(id)
+    public void delete(@PathVariable @NotNull @Positive Long id){
+
+        repository.delete(repository.findById(id)
+                .orElseThrow(()-> new RecordNotFoundException(id)));
+
+       /*  repository.findById(id)
                 .map(recordFound -> {
                     repository.deleteById(id);
                     return true;
                 })
-                .orElse(false);
+                 .orElseThrow(()->new RecordNotFoundException(id)); */
     }
 }
