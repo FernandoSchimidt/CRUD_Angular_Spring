@@ -2,7 +2,6 @@ package com.schimidt.crudspring.service;
 
 import com.schimidt.crudspring.dto.CourseDTO;
 import com.schimidt.crudspring.dto.mapper.CourseMapper;
-import com.schimidt.crudspring.enums.Category;
 import com.schimidt.crudspring.exception.RecordNotFoundException;
 import com.schimidt.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -53,12 +52,12 @@ public class CourseService {
         return repository.findById(id)
                 .map(recordFound -> {
                     recordFound.setName(course.name());
-                    recordFound.setCategory(Category.FRONT_END);
+                    recordFound.setCategory(mapper.convertCategory(course.category()));
                     return mapper.toDTO(repository.save(recordFound));
                 }).orElseThrow(()-> new RecordNotFoundException(id));
     }
 
-    public void delete(@PathVariable @NotNull @Positive Long id) {
+    public void delete(@NotNull @Positive Long id) {
 
         repository.delete(repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(id)));

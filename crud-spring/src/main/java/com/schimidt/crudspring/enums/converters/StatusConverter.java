@@ -1,5 +1,4 @@
 package com.schimidt.crudspring.enums.converters;
-import com.schimidt.crudspring.enums.Category;
 import com.schimidt.crudspring.enums.Status;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
