@@ -1,17 +1,15 @@
 package com.schimidt.crudspring.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.schimidt.crudspring.enums.Category;
+import com.schimidt.crudspring.enums.converters.CategoryConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.SQLSelect;
 import org.hibernate.validator.constraints.Length;
 
 @Data
@@ -32,11 +30,10 @@ public class Course {
     @Length(min = 5,max = 100)
     private String name;
 
-    @Column(name="category",length = 20,nullable = false)
+    @Column(name="category", length = 10,nullable = false)
     @NotNull
-    @Length(max = 50)
-    @Pattern(regexp = "Back-end|Front-end")
-    private String category;
+    @Convert(converter = CategoryConverter.class)
+    private Category category;
 
     @Column(name="status",length = 10,nullable = false)
     @NotNull

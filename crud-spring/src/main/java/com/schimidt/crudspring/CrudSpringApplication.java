@@ -1,5 +1,6 @@
 package com.schimidt.crudspring;
 
+import com.schimidt.crudspring.enums.Category;
 import com.schimidt.crudspring.model.Course;
 import com.schimidt.crudspring.repository.CourseRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +23,7 @@ public class CrudSpringApplication {
 
 			Course c = new Course();
 			c.setName("Angular com Spring");
-			c.setCategory("Front-end");
+			c.setCategory(Category.FRONT_END);
 
 			repository.save(c);
 		};
