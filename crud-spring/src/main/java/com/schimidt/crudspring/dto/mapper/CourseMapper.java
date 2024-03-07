@@ -2,6 +2,7 @@ package com.schimidt.crudspring.dto.mapper;
 
 import com.schimidt.crudspring.dto.CourseDTO;
 import com.schimidt.crudspring.enums.Category;
+import com.schimidt.crudspring.enums.Status;
 import com.schimidt.crudspring.model.Course;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class CourseMapper {
         }
         course.setName(courseDTO.name());
         course.setCategory(Category.FRONT_END);
-        course.setStatus("Ativo");
+        course.setStatus(Status.ACTIVE);
         return  course;
 
         //Builder pattern

@@ -2,7 +2,9 @@ package com.schimidt.crudspring.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.schimidt.crudspring.enums.Category;
+import com.schimidt.crudspring.enums.Status;
 import com.schimidt.crudspring.enums.converters.CategoryConverter;
+import com.schimidt.crudspring.enums.converters.StatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +39,7 @@ public class Course {
 
     @Column(name="status",length = 10,nullable = false)
     @NotNull
+    @Convert(converter = StatusConverter.class)
     @Length(max = 10)
-    @Pattern(regexp = "Ativo|Inativo")
-    private String status = "Ativo";
+    private Status status;
 }

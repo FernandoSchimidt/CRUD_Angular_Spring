@@ -63,11 +63,5 @@ public class CourseService {
         repository.delete(repository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(id)));
 
-       /*  repository.findById(id)
-                .map(recordFound -> {
-                    repository.deleteById(id);
-                    return true;
-                })
-                 .orElseThrow(()->new RecordNotFoundException(id)); */
     }
 }
