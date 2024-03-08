@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
 import {
-  FormBuilder,
   FormGroup,
   NonNullableFormBuilder,
-  UntypedFormBuilder,
-  UntypedFormGroup,
+  UntypedFormArray,
   Validators,
 } from '@angular/forms';
 import { CourseService } from '../../service/course.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Course } from '../../model/course';
+import { Lesson } from '../../model/lesson';
 
 @Component({
   selector: 'app-course-form',
@@ -18,14 +17,7 @@ import { Course } from '../../model/course';
   styleUrl: './course-form.component.scss',
 })
 export class CourseFormComponent {
-  form = this.formBuilder.group({
-    id: [''],
-    name: [
-      '',
-      [Validators.required, Validators.minLength(3), Validators.maxLength(100)],
-    ],
-    category: ['', [Validators.required]],
-  });
+  form!: FormGroup;
 
   constructor(
     private formBuilder: NonNullableFormBuilder,
@@ -37,13 +29,41 @@ export class CourseFormComponent {
 
   ngOnInit(): void {
     const course: Course = this.route.snapshot.data['course'];
-    // console.log(course);
-    this.form.setValue({
-      id: course.id,
-      name: course.name,
-      category: course.category,
+    this.form = this.formBuilder.group({
+      id: [course.id],
+      name: [
+        course.name,
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(100),
+        ],
+      ],
+      category: [course.category, [Validators.required]],
+      lessons: this.formBuilder.array(this.retrieveLessons(course)),
     });
-    console.log(course)
+    console.log(this.form);
+    console.log(this.form.value);
+  }
+
+  private retrieveLessons(course: Course) {
+    const lessons = [];
+    if (course?.lessons) {
+      course.lessons.forEach((lesson) =>
+        lessons.push(this.createLesson(lesson))
+      );
+    } else {
+      lessons.push(this.createLesson());
+    }
+    return lessons;
+  }
+
+  private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
+    return this.formBuilder.group({
+      id: [lesson.id],
+      name: [lesson.name],
+      youtubeUrl: [lesson.youtubeUrl],
+    });
   }
 
   onSubmit() {
@@ -85,5 +105,13 @@ export class CourseFormComponent {
       return `O campo nome deve ter no maximo ${requiredLenght} caracteres`;
     }
     return 'Campo invalido';
+  }
+  getLessonsformArray() {
+    return (<UntypedFormArray>this.form.get('lessons')).controls;
+  }
+
+  addNewClass(){
+    const lessons = this.form.get('lessons') as UntypedFormArray;
+    lessons.push(this.createLesson());
   }
 }
