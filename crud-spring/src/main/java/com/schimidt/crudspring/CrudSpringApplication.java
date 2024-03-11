@@ -12,34 +12,32 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class CrudSpringApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CrudSpringApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(CrudSpringApplication.class, args);
 
 
-	}
-	@Bean
-	CommandLineRunner initDatabse(CourseRepository repository){
-		return args -> {
-			repository.deleteAll();
+    }
 
-			Course c = new Course();
-			c.setName("Angular com Spring");
-			c.setCategory(Category.FRONT_END);
+    @Bean
+    CommandLineRunner initDatabse(CourseRepository repository) {
+        return args -> {
+            repository.deleteAll();
 
-			Lesson l = new Lesson();
-			l.setName("Introdução");
-			l.setYoutubeUrl("watch?v=11");
-			l.setCourse(c);
-		c.getLessons().add(l);
+            for (int i = 0; i <= 23; i++) {
 
-			Lesson l1 = new Lesson();
-			l1.setName("Angular 17");
-			l1.setYoutubeUrl("watch?v=22");
-			l1.setCourse(c);
-			c.getLessons().add(l1);
+                Course c = new Course();
+                c.setName("Angular com Spring" + i);
+                c.setCategory(Category.FRONT_END);
 
-			repository.save(c);
-		};
-	}
+                Lesson l = new Lesson();
+                l.setName("Introdução");
+                l.setYoutubeUrl("watch?v=1");
+                l.setCourse(c);
+                c.getLessons().add(l);
+
+                repository.save(c);
+            }
+        };
+    }
 
 }
