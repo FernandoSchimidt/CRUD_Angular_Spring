@@ -3,6 +3,8 @@ import {
   FormGroup,
   NonNullableFormBuilder,
   UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { CourseService } from '../../service/course.service';
@@ -10,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Course } from '../../model/course';
 import { Lesson } from '../../model/lesson';
+import { FormUtilsService } from '../../../shared/form/form-utils.service';
 
 @Component({
   selector: 'app-course-form',
@@ -24,9 +27,23 @@ export class CourseFormComponent {
     private service: CourseService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public formUtils: FormUtilsService
   ) {}
+  validateAllFormFields(formGroup: UntypedFormGroup | UntypedFormArray) {
+    Object.keys(formGroup.controls).forEach((field) => {
+      const control = formGroup.get(field);
 
+      if (control instanceof UntypedFormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (
+        control instanceof UntypedFormGroup ||
+        control instanceof UntypedFormArray
+      ) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
   ngOnInit(): void {
     const course: Course = this.route.snapshot.data['course'];
     this.form = this.formBuilder.group({
@@ -45,8 +62,6 @@ export class CourseFormComponent {
         Validators.required
       ),
     });
-    console.log(this.form);
-    console.log(this.form.value);
   }
 
   private retrieveLessons(course: Course) {
@@ -64,8 +79,22 @@ export class CourseFormComponent {
   private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
     return this.formBuilder.group({
       id: [lesson.id],
-      name: [lesson.name],
-      youtubeUrl: [lesson.youtubeUrl],
+      name: [
+        lesson.name,
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(100),
+        ],
+      ],
+      youtubeUrl: [
+        lesson.youtubeUrl,
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(11),
+        ],
+      ],
     });
   }
 
@@ -80,8 +109,8 @@ export class CourseFormComponent {
           this.openSnackBar('Erro ao salvar o curso', 'Erro');
         }
       );
-    }else{
-      alert('form invalido')
+    } else {
+      this.formUtils.validateAllFormFields(this.form);
     }
   }
   onCancel() {
@@ -94,24 +123,6 @@ export class CourseFormComponent {
     });
   }
 
-  getErrorMessage(fieldName: string) {
-    const field = this.form.get(fieldName);
-
-    const erros = this.form.getError(fieldName);
-
-    if (field?.hasError('required')) {
-      return 'Campo obrigatorio';
-    }
-    if (field?.hasError('minlength')) {
-      const requiredLenght = erros ? erros['requiredlength'] : 5;
-      return `O campo nome deve ter pelo menos ${requiredLenght} caracteres`;
-    }
-    if (field?.hasError('maxlength')) {
-      const requiredLenght = erros ? erros['requiredlength'] : 50;
-      return `O campo nome deve ter no maximo ${requiredLenght} caracteres`;
-    }
-    return 'Campo invalido';
-  }
   getLessonsformArray() {
     return (<UntypedFormArray>this.form.get('lessons')).controls;
   }

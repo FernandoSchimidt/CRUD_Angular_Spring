@@ -4,6 +4,7 @@ import com.schimidt.crudspring.dto.CourseDTO;
 import com.schimidt.crudspring.dto.LessonDTO;
 import com.schimidt.crudspring.enums.Category;
 import com.schimidt.crudspring.model.Course;
+import com.schimidt.crudspring.model.Lesson;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,6 +37,17 @@ public class CourseMapper {
         }
         course.setName(courseDTO.name());
         course.setCategory(convertCategory(courseDTO.category()));
+
+        List<Lesson> lessons = courseDTO.lessons().stream()
+                .map(lessonDTO -> {
+                    var lesson = new Lesson();
+                    lesson.setId(lessonDTO.id());
+                    lesson.setName(lessonDTO.name());
+                    lesson.setYoutubeUrl(lessonDTO.youtubeUrl());
+                    lesson.setCourse(course);
+                    return lesson;
+                }).collect(Collectors.toList());
+        course.setLessons(lessons);
         return course;
 
         //Builder pattern

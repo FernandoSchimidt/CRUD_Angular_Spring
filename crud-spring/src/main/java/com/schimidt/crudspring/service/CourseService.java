@@ -3,6 +3,7 @@ package com.schimidt.crudspring.service;
 import com.schimidt.crudspring.dto.CourseDTO;
 import com.schimidt.crudspring.dto.mapper.CourseMapper;
 import com.schimidt.crudspring.exception.RecordNotFoundException;
+import com.schimidt.crudspring.model.Course;
 import com.schimidt.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -48,13 +49,17 @@ public class CourseService {
         return mapper.toDTO(repository.save(mapper.toEntity(course)));
     }
 
-    public CourseDTO update(@NotNull @Positive Long id, @Valid CourseDTO course) {
+    public CourseDTO update(@NotNull @Positive Long id, @Valid CourseDTO courseDTO) {
         return repository.findById(id)
                 .map(recordFound -> {
-                    recordFound.setName(course.name());
-                    recordFound.setCategory(mapper.convertCategory(course.category()));
+                    Course course = mapper.toEntity(courseDTO);
+                    recordFound.setName(courseDTO.name());
+                    recordFound.setCategory(mapper.convertCategory(courseDTO.category()));
+                    // recordFound.setLessons(course.getLessons());
+                    recordFound.getLessons().clear();
+                    course.getLessons().forEach(recordFound.getLessons()::add);
                     return mapper.toDTO(repository.save(recordFound));
-                }).orElseThrow(()-> new RecordNotFoundException(id));
+                }).orElseThrow(() -> new RecordNotFoundException(id));
     }
 
     public void delete(@NotNull @Positive Long id) {

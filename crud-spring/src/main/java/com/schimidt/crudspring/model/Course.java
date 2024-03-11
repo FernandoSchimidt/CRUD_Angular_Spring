@@ -8,7 +8,6 @@ import com.schimidt.crudspring.enums.converters.StatusConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+
 @Entity
 @SQLDelete(sql = "UPDATE course SET status = 'Inativo' WHERE id=?")
 @SQLRestriction("status <> 'Inativo'")
@@ -44,7 +43,71 @@ public class Course {
     @Convert(converter = StatusConverter.class)
     private Status status = Status.ACTIVE;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,mappedBy = "course")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "course")
     //@JoinColumn(name = "course_id")
     private List<Lesson> lessons = new ArrayList<>();
+
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", category=" + category +
+                ", status=" + status +
+                ", lessons=" + lessons +
+                '}';
+    }
+
+    public Course(Long id, String name, Category category, Status status, List<Lesson> lessons) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.status = status;
+        this.lessons = lessons;
+    }
+
+    public Course() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 }
