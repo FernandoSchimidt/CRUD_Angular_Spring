@@ -42,6 +42,11 @@
               <input matInput formControlName="youtubeUrl" />
             </mat-form-field>
           </td>
+          <td>
+            <button mat-icon-button color="warn" (click)="removeLesson(i)">
+              <mat-icon aria-label="Remover aula">delete</mat-icon>
+            </button>
+          </td>
         </tr>
       </table>
       }
