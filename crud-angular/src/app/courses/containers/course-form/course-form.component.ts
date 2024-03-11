@@ -40,7 +40,10 @@ export class CourseFormComponent {
         ],
       ],
       category: [course.category, [Validators.required]],
-      lessons: this.formBuilder.array(this.retrieveLessons(course)),
+      lessons: this.formBuilder.array(
+        this.retrieveLessons(course),
+        Validators.required
+      ),
     });
     console.log(this.form);
     console.log(this.form.value);
@@ -67,16 +70,19 @@ export class CourseFormComponent {
   }
 
   onSubmit() {
-    this.service.save(this.form.value).subscribe(
-      (data) => {
-        console.log(data);
-        this.openSnackBar('Curso salvo com sucesso', 'Ok');
-        this.router.navigate(['']);
-      },
-      (error) => {
-        this.openSnackBar('Erro ao salvar o curso', 'Erro');
-      }
-    );
+    if (this.form.valid) {
+      this.service.save(this.form.value).subscribe(
+        (data) => {
+          this.openSnackBar('Curso salvo com sucesso', 'Ok');
+          this.router.navigate(['']);
+        },
+        (error) => {
+          this.openSnackBar('Erro ao salvar o curso', 'Erro');
+        }
+      );
+    }else{
+      alert('form invalido')
+    }
   }
   onCancel() {
     this.router.navigate(['']);
@@ -110,11 +116,11 @@ export class CourseFormComponent {
     return (<UntypedFormArray>this.form.get('lessons')).controls;
   }
 
-  addNewClass(){
+  addNewClass() {
     const lessons = this.form.get('lessons') as UntypedFormArray;
     lessons.push(this.createLesson());
   }
-  removeLesson(index:number){
+  removeLesson(index: number) {
     const lessons = this.form.get('lessons') as UntypedFormArray;
     lessons.removeAt(index);
   }
