@@ -20,6 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {} from '@angular/material/snack-bar';
 import { CoursesListComponent } from './components/courses-list/courses-list.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [CoursesComponent, CourseFormComponent, CoursesListComponent],
@@ -40,6 +41,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatSelectModule,
     MatSelectModule,
     MatDatepickerModule,
+    MatPaginatorModule,
   ],
 })
 export class CoursesModule {}

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Course } from '../model/course';
 import { HttpClient } from '@angular/common/http';
 import { delay, first, tap } from 'rxjs';
+import { CoursePage } from '../model/course-page';
 
 @Injectable({
   providedIn: 'root',
@@ -11,12 +12,14 @@ export class CourseService {
 
   constructor(private httpClient: HttpClient) {}
 
-  list() {
-    return this.httpClient.get<Course[]>(this.API).pipe(
-      // delay(3000),
-      // tap(courses =>console.log(courses))
-      first()
-    );
+  list(page = 0, pageSize = 10) {
+    return this.httpClient
+      .get<CoursePage>(this.API, { params: { page, pageSize } })
+      .pipe(
+        // delay(3000),
+        // tap(courses =>console.log(courses)),
+        first()
+      );
   }
 
   save(record: Partial<Course>) {
@@ -42,9 +45,6 @@ export class CourseService {
   }
 
   public remove(id: string) {
-    return this.httpClient
-      .delete(`${this.API}/${id}`)
-      .pipe(first());
+    return this.httpClient.delete(`${this.API}/${id}`).pipe(first());
   }
-
 }
